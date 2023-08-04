@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display Dynamic</title>
+    <style>
+        body {
+            margin: 3rem;
+        }
+
+        .item-container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .item {
+            width: 60%;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            padding: 1em;
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 5px;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: opacity 0.5s, transform 0.5s;
+        }
+
+        .show {
+            opacity: 1;
+            transform: scale(1);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="item-container">
+        <div class="item" data-item="1">Item 1</div>
+        <div class="item" data-item="2">Item 2</div>
+        <div class="item" data-item="3">Item 3</div>
+        <div class="item" data-item="4">Item 4</div>
+        <div class="item" data-item="5">Item 5</div>
+        <div class="item" data-item="6">Item 6</div>
+        <div class="item" data-item="7">Item 7</div>
+        <div class="item" data-item="8">Item 8</div>
+        <div class="item" data-item="9">Item 9</div>
+        <div class="item" data-item="10">Item 10</div>
+        <div class="item" data-item="11">Item 11</div>
+        <div class="item" data-item="12">Item 12</div>
+        <div class="item" data-item="13">Item 13</div>
+        <div class="item" data-item="14">Item 14</div>
+        <div class="item" data-item="15">Item 15</div>
+        <div class="item" data-item="16">Item 16</div>
+        <div class="item" data-item="17">Item 17</div>
+        <div class="item" data-item="18">Item 18</div>
+        <div class="item" data-item="19">Item 19</div>
+        <div class="item" data-item="20">Item 20</div>
+        <div class="item" data-item="21">Item 21</div>
+        <div class="item" data-item="22">Item 22</div>
+        <div class="item" data-item="23">Item 23</div>
+        <div class="item" data-item="24">Item 24</div>
+        <div class="item" data-item="25">Item 25</div>
+        <div class="item" data-item="26">Item 26</div>
+        <div class="item" data-item="27">Item 27</div>
+        <div class="item" data-item="28">Item 28</div>
+        <div class="item" data-item="29">Item 29</div>
+        <div class="item" data-item="30">Item 30</div>
+    </div>
+
+    <script>
+        const items = document.querySelectorAll('.item');
+
+        function isInViewport(element) {
+            const rect = element.getBoundingClientRect();
+            return (
+                rect.top >= 0 &&
+                rect.left >= 0 &&
+                rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+                rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+            );
+        }
+
+        function handleScroll() {
+            items.forEach(item => {
+                if (isInViewport(item)) {
+                    item.classList.add('show')
+                } else {
+                    item.classList.remove('show')
+                }
+            });
+        }
+
+        window.addEventListener('scroll', handleScroll);
+
+        handleScroll();
+    </script>
+</body>
+
+</html>
