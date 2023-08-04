@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visible Items with Animation</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .item-container {
+            display: flex;
+            /* flex-direction: column; */
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .item {
+            width: 200px;
+            height: 100px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 5px;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: opacity 1.5s, transform 1.5s;
+        }
+
+        .show {
+            opacity: 1;
+            transform: scale(1);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="item-container">
+        <div class="item" data-item="1">Item 1</div>
+        <div class="item" data-item="2">Item 2</div>
+        <div class="item" data-item="3">Item 3</div>
+        <div class="item" data-item="4">Item 4</div>
+        <div class="item" data-item="5">Item 5</div>
+        <div class="item" data-item="6">Item 6</div>
+        <div class="item" data-item="7">Item 7</div>
+        <div class="item" data-item="8">Item 8</div>
+        <div class="item" data-item="9">Item 9</div>
+        <div class="item" data-item="10">Item 10</div>
+    </div>
+
+    <script>
+        let itemsCount = 10;
+        const items = document.querySelectorAll('.item');
+
+        const options = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.2,
+        };
+
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                entry.target.classList.toggle("show", entry.isIntersecting);
+                // if (entry.isIntersecting) {
+                //     observer.unobserve(entry.target);
+                // }
+            })
+        }, options);
+
+        items.forEach(item => observer.observe(item));
+
+        const lastItemObserver = new IntersectionObserver(entries => {
+            const lastItem = entries[0];
+            if (!lastItem.isIntersecting) return;
+            loadNewItems();
+            lastItemObserver.unobserve(lastItem.target);
+            lastItemObserver.observe(document.querySelector('.item:last-child'));
+        }, {})
+
+        lastItemObserver.observe(document.querySelector(".item:last-child"));
+
+        const itemContainer = document.querySelector(".item-container");
+        function loadNewItems() {
+            for (let i = itemsCount + 1; i <= itemsCount + 10; i++) {
+                const item = document.createElement('div');
+                item.textContent = `item ${i}`;
+                item.classList.add('item');
+                observer.observe(item);
+                itemContainer.append(item);
+            }
+            itemsCount += 10;
+        }
+    </script>
+</body>
+
+</html>
