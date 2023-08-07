@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--=============== CSS ===============-->
+    <link rel="stylesheet" href="./style.css">
+
+    <title>Range slider - Bedimcode</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="range">
+            <div class="range__content">
+                <div class="range__slider">
+                    <div class="range__slider-line" id="range-line"></div>
+                </div>
+
+                <div class="min">0</div>
+                <div class="range__thumb" id="range-thumb">
+                    <div class="range__value" id="range-value">
+                        <span class="range__value-number" id="range-number">50</span>
+                    </div>
+                </div>
+                <div class="max">100</div>
+                <input type="range" class="range__input" id="range-input" min="0" max="100" value="50" step="1">
+            </div>
+        </div>
+    </div>
+
+    <!--=============== MAIN JS ===============-->
+    <script>
+        /*=============== RANGE SLIDER JS ===============*/
+        const rangeThumb = document.getElementById("range-thumb"),
+            rangeNumber = document.getElementById("range-number"),
+            rangeLine = document.getElementById("range-line"),
+            rangeInput = document.getElementById("range-input"),
+            rangeValue = document.getElementById("range-value");
+
+
+        const rangeInputSlider = () => {
+
+            // Insert the value of the input range
+            rangeNumber.textContent = rangeInput.value;
+
+            // Calculate the position of the input thumb
+            // rangeInput.value = 50, rangeInput.max = 100, (50 / 100 = 0.5)
+            // rangeInput.offsetWidth = 248, rangeThumb.offsetWidth = 32, (248 - 32 = 216)
+            const thumbPosition = rangeInput.value / rangeInput.max,
+                space = rangeInput.offsetWidth - rangeThumb.offsetWidth;
+
+            // We insert the position of the input thumb
+            // thumbPosition = 0.5, space = 216 (0.5 * 216 = 108)
+            rangeThumb.style.left = thumbPosition * space + "px";
+
+            // We insert the width to the slider with the value of the input value
+            // rangeInput.value = 50, ancho = 50%
+            rangeLine.style.width = rangeInput.value / (rangeInput.max / 100) + "%";
+
+            // We call the range input
+
+        };
+        rangeInput.addEventListener("input", () => {
+            rangeInputSlider();
+            rangeValue.classList.add("show");
+        });
+        rangeInput.addEventListener("blur", () => {
+            rangeValue.classList.remove("show");
+        })
+        rangeInputSlider();
+
+    </script>
+</body>
+
+</html>
