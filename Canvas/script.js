@@ -1,6 +1,4 @@
 const canvas = document.querySelector("canvas");
-const scrollWidth =
-  document.documentElement.offsetWidth - document.documentElement.clientWidth;
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
@@ -99,51 +97,52 @@ function getRandomColor() {
   return color;
 }
 
-function Circle(x, y, dx, dy, radius) {
-  this.x = x;
-  this.y = y;
-  this.dx = dx;
-  this.dy = dy;
-  this.radius = radius;
-  this.minRadius = radius;
-  this.color = getRandomColor();
+class Circle {
+  constructor(x, y, dx, dy, radius) {
+    this.x = x;
+    this.y = y;
+    this.dx = dx;
+    this.dy = dy;
+    this.radius = radius;
+    this.minRadius = radius;
+    this.color = getRandomColor();
 
-  this.draw = function () {
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
-    // ctx.strokeStyle = this.color;
-    // ctx.lineWidth = 4;
-    ctx.fill();
-    ctx.fillStyle = this.color;
-    // ctx.stroke();
-  };
+    this.draw = function () {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+      // ctx.strokeStyle = this.color;
+      // ctx.lineWidth = 4;
+      ctx.fill();
+      ctx.fillStyle = this.color;
+      // ctx.stroke();
+    };
 
-  this.update = function () {
-    if (this.x > innerWidth - this.radius || this.x < 0 + radius) {
-      this.dx = -this.dx;
-    }
+    this.update = function () {
+      if (this.x > innerWidth - this.radius || this.x < 0 + radius) {
+        this.dx = -this.dx;
+      }
 
-    if (this.y > innerHeight - this.radius || this.y < 0 + radius) {
-      this.dy = -this.dy;
-    }
+      if (this.y > innerHeight - this.radius || this.y < 0 + radius) {
+        this.dy = -this.dy;
+      }
 
-    this.x += this.dx;
-    this.y += this.dy;
+      this.x += this.dx;
+      this.y += this.dy;
 
-    // Interactivity
-
-    if (
-      mouse.x - this.x < 150 &&
-      mouse.x - this.x > -150 &&
-      mouse.y - this.y < 150 &&
-      mouse.y - this.y > -150
-    ) {
-      if (this.radius < 50) this.radius += 1;
-    } else {
-      if (this.radius > this.minRadius) this.radius -= 1;
-    }
-    this.draw();
-  };
+      // Interactivity
+      if (
+        mouse.x - this.x < 150 &&
+        mouse.x - this.x > -150 &&
+        mouse.y - this.y < 150 &&
+        mouse.y - this.y > -150
+      ) {
+        if (this.radius < 50) this.radius += 1;
+      } else {
+        if (this.radius > this.minRadius) this.radius -= 1;
+      }
+      this.draw();
+    };
+  }
 }
 
 // let x = window.innerWidth * Math.random();
@@ -156,6 +155,7 @@ let circleArr = [];
 
 function init() {
   circleArr = [];
+  let circle = new Circle(200, 200, 1, 1, 30);
 
   for (let i = 0; i < 1800; i++) {
     const radius = Math.random() * 3 + 1;
@@ -172,6 +172,7 @@ function init() {
 }
 
 init();
+
 function animate() {
   requestAnimationFrame(animate);
   ctx.clearRect(0, 0, innerWidth, innerHeight);
