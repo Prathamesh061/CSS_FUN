@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            /* overflow: hidden; */
+            /* Hide the default scrollbar */
+        }
+
+        section {
+            width: 100%;
+            height: 100vh;
+            scroll-snap-align: start;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5em;
+            scroll-behavior: smooth;
+        }
+
+        section:nth-child(odd) {
+            background-color: #f0f0f0;
+        }
+
+        section:nth-child(even) {
+            background-color: #e0e0e0;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+    <title>Smooth Scrolling</title>
+</head>
+
+<body>
+    <section id="page1">
+        <h1>Page 1</h1>
+        <p>Lots of text and content for Page 1.</p>
+        <img src="image1.jpg" alt="Image 1">
+    </section>
+
+    <section id="page2">
+        <h1>Page 2</h1>
+        <p>Lots of text and content for Page 2.</p>
+        <img src="image2.jpg" alt="Image 2">
+    </section>
+
+    <section id="page3">
+        <h1>Page 3</h1>
+        <p>Lots of text and content for Page 3.</p>
+        <img src="image3.jpg" alt="Image 3">
+    </section>
+
+    <section id="page4">
+        <h1>Page 4</h1>
+        <p>Lots of text and content for Page 4.</p>
+        <img src="image4.jpg" alt="Image 4">
+    </section>
+
+    <section id="page5">
+        <h1>Page 5</h1>
+        <p>Lots of text and content for Page 5.</p>
+        <img src="image5.jpg" alt="Image 5">
+    </section>
+
+    <script>
+        // Smooth scrolling effect
+        (function () {
+            var speed = 0.11; // Adjust scrolling speed
+            var scrollPosition = 1;
+
+            function smoothScroll() {
+                var targetScroll = window.scrollY;
+                scrollPosition += (targetScroll - scrollPosition) * speed;
+                document.body.style.transform = 'translateY(' + -scrollPosition + 'px)';
+                requestAnimationFrame(smoothScroll);
+            }
+
+            document.addEventListener('DOMContentLoaded', function () {
+                smoothScroll();
+            });
+        })();
+    </script>
+</body>
+
+</html>

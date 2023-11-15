@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webcam Photo and Video Capture</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        #webcam-container {
+            position: relative;
+        }
+
+        #webcam {
+            max-width: 100%;
+            border: 2px solid #333;
+            border-radius: 8px;
+            transition: transform 0.3s;
+        }
+
+        #webcam.fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            border: none;
+            border-radius: 0;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            font-size: 18px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #007bff;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .stop-btn:hover {
+            background-color: #b21212;
+            transform: scale(1.05);
+        }
+
+        .btn-hidden {
+            display: none;
+        }
+
+        .btn-download {
+            background-color: #28a745;
+        }
+
+        .stop-btn {
+            background: #b21212;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div id="webcam-container">
+            <video id="webcam" autoplay style="height: 100%; width: 100%; padding:1em"></video>
+            <div class="buttons">
+                <button id="capturePhotoBtn" class="btn">Capture Photo</button>
+                <button id="startRecordingBtn" class="btn">Start Recording</button>
+                <button id="stopRecordingBtn" class="btn stop-btn btn-hidden">Stop Recording</button>
+                <a id="downloadLink" class="btn btn-download btn-hidden" download>Download</a>
+                <button id="fullscreenBtn" class="btn">Toggle Fullscreen</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        const webcamContainer = document.getElementById('webcam-container');
+        const webcam = document.getElementById('webcam');
+        const capturePhotoBtn = document.getElementById('capturePhotoBtn');
+        const startRecordingBtn = document.getElementById('startRecordingBtn');
+        const stopRecordingBtn = document.getElementById('stopRecordingBtn');
+        const downloadLink = document.getElementById('downloadLink');
+        const fullscreenBtn = document.getElementById('fullscreenBtn');
+        let mediaRecorder;
+        let recordedChunks = [];
+        let isFullscreen = false;
+
+        navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+            .then((stream) => {
+                webcam.srcObject = stream;
+            })
+            .catch((error) => {
+                console.error('Error accessing webcam:', error);
+            });
+
+        capturePhotoBtn.addEventListener('click', () => {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = webcam.videoWidth;
+            canvas.height = webcam.videoHeight;
+            context.drawImage(webcam, 0, 0, canvas.width, canvas.height);
+
+            canvas.toBlob((blob) => {
+                const imageUrl = URL.createObjectURL(blob);
+                downloadLink.href = imageUrl;
+                downloadLink.download = 'captured_photo.jpg';
+                downloadLink.style.display = 'block';
+            }, 'image/jpeg');
+        });
+
+        startRecordingBtn.addEventListener('click', () => {
+            recordedChunks = [];
+            mediaRecorder = new MediaRecorder(webcam.srcObject);
+            mediaRecorder.ondataavailable = (event) => {
+                if (event.data.size > 0) {
+                    recordedChunks.push(event.data);
+                }
+            };
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                const videoUrl = URL.createObjectURL(blob);
+                downloadLink.href = videoUrl;
+                downloadLink.download = 'recorded_video.webm';
+                downloadLink.style.display = 'block';
+            };
+            mediaRecorder.start();
+            startRecordingBtn.style.display = 'none';
+            stopRecordingBtn.style.display = 'inline';
+        });
+
+        stopRecordingBtn.addEventListener('click', () => {
+            mediaRecorder.stop();
+            startRecordingBtn.style.display = 'inline';
+            stopRecordingBtn.style.display = 'none';
+        });
+
+        fullscreenBtn.addEventListener('click', () => {
+            toggleFullscreen();
+        });
+
+        function toggleFullscreen() {
+            if (!isFullscreen) {
+                if (webcamContainer.requestFullscreen) {
+                    webcamContainer.requestFullscreen();
+                } else if (webcamContainer.mozRequestFullScreen) {
+                    webcamContainer.mozRequestFullScreen();
+                } else if (webcamContainer.webkitRequestFullscreen) {
+                    webcamContainer.webkitRequestFullscreen();
+                } else if (webcamContainer.msRequestFullscreen) {
+                    webcamContainer.msRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.mozCancelFullScreen) {
+                    document.mozCancelFullScreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) {
+                    document.msExitFullscreen();
+                }
+            }
+
+            isFullscreen = !isFullscreen;
+        }
+    </script>
+</body>
+
+</html>
